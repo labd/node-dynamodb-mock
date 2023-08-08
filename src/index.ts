@@ -18,7 +18,7 @@ const handler = async (
 	const action = target[1] as ActionType;
 	let data = JSON.parse(body as string);
 
-	var actionValidation = actionValidations[action];
+	const actionValidation = actionValidations[action];
 	try {
 		data = validations.checkTypes(data, actionValidation.types);
 		validations.checkValidations(
@@ -44,18 +44,14 @@ const handler = async (
 	});
 
 	return await p
-		.then((data) => {
-			return {
-				statusCode: 200,
-				body: data,
-			};
-		})
-		.catch((err) => {
-			return {
-				statusCode: err.statusCode,
-				body: err.body,
-			};
-		});
+		.then((data) => ({
+			statusCode: 200,
+			body: data,
+		}))
+		.catch((err) => ({
+			statusCode: err.statusCode,
+			body: err.body,
+		}));
 };
 
 type Options = {
@@ -64,7 +60,7 @@ type Options = {
 
 export const mockDynamoDB = (options: Options) => {
 	const store = db.create({});
-	const api = nock(options.endpoint)
+	nock(options.endpoint)
 		.persist()
 		.post("/")
 		.reply(async function (uri, body) {

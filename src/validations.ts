@@ -16,7 +16,7 @@ import ListTagsOfResource from "dynalite/validations/listTagsOfResource";
 import UpdateItem from "dynalite/validations/updateItem";
 import UpdateTable from "dynalite/validations/updateTable";
 
-import { ActionType, actions } from "./actions.js";
+import { ActionType } from "./actions.js";
 
 export const actionValidations: Record<ActionType, any> = {
 	BatchGetItem,
