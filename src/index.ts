@@ -28,10 +28,13 @@ const handler = async (
 			store
 		);
 	} catch (err: any) {
-		return {
-			statusCode: err.statusCode,
-			body: err.body,
-		};
+		if (err.statusCode) {
+			return {
+				statusCode: err.statusCode,
+				body: err.body,
+			};
+		}
+		throw err;
 	}
 
 	const p = new Promise((resolve, reject) => {
@@ -48,10 +51,15 @@ const handler = async (
 			statusCode: 200,
 			body: data,
 		}))
-		.catch((err) => ({
-			statusCode: err.statusCode,
-			body: err.body,
-		}));
+		.catch((err) => {
+			if (err.statusCode) {
+				return {
+					statusCode: err.statusCode,
+					body: err.body,
+				};
+			}
+			throw err;
+		});
 };
 
 type Options = {

@@ -46,3 +46,15 @@ test("createTables", async () => {
 	const tables = await client.listTables({});
 	expect(tables.TableNames).toEqual(["Music"]);
 });
+
+test("getItem not found", async () => {
+	await expect(
+		client.getItem({
+			TableName: "Music",
+			Key: {
+				Artist: { S: "No One You Know" },
+				SongTitle: { S: "Call Me Today" },
+			},
+		})
+	).rejects.toThrow("Requested resource not found");
+});
