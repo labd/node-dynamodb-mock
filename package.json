@@ -1,0 +1,41 @@
+{
+  "name": "@labdigital/mock-dynamodb",
+  "version": "0.0.1",
+  "description": "Mock DynamoDB for testing using dynalite",
+  "main": "dist/index.js",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsup",
+    "publish:ci": "pnpm build && pnpm changeset publish",
+    "format": "prettier --write src/",
+    "test": "pnpm vitest run",
+    "test:ci": "pnpm vitest run --coverage",
+    "tsc": "tsc"
+  },
+  "keywords": [],
+  "author": "Lab Digital <opensource@labdigital.nl>",
+  "license": "MIT",
+  "dependencies": {
+    "dynalite": "^3.2.2",
+    "express": "^4.18.2",
+    "nock": "^13.3.2",
+    "supertest": "^6.3.3",
+    "tsx": "^3.12.7"
+  },
+  "devDependencies": {
+    "@aws-sdk/client-dynamodb": "^3.386.0",
+    "@changesets/cli": "^2.26.2",
+    "@types/express": "^4.17.17",
+    "@vitest/coverage-v8": "^0.34.1",
+    "eslint": "^8.46.0",
+    "tsup": "^7.2.0",
+    "typescript": "^5.1.6",
+    "vitest": "^0.34.1"
+  }
+}
