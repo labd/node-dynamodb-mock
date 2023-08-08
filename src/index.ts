@@ -1,6 +1,7 @@
 import express from "express";
-import nock from "nock";
+import nock, { ReplyFnContext } from "nock";
 
+import { ClientRequest } from "http";
 // @ts-ignore
 import db from "dynalite/db";
 
@@ -10,89 +11,74 @@ import validations from "dynalite/validations";
 // @ts-ignore
 import supertest from "supertest";
 
-export class MockDynamoDB {
-  validOperations = [
-    "BatchGetItem",
-    "BatchWriteItem",
-    "CreateTable",
-    "DeleteItem",
-    "DeleteTable",
-    "DescribeTable",
-    "DescribeTimeToLive",
-    "GetItem",
-    "ListTables",
-    "PutItem",
-    "Query",
-    "Scan",
-    "TagResource",
-    "UntagResource",
-    "ListTagsOfResource",
-    "UpdateItem",
-    "UpdateTable",
-  ];
-  actions: Record<string, any> = {};
-  actionValidations: Record<string, any> = {};
+import { ActionType, actions } from "./actions.js";
+import { actionValidations } from "./validations.js";
 
-  constructor() {}
+type Response = {
+  statusCode: number;
+  body: any;
+};
 
-  async load() {
-    for (let action of this.validOperations) {
-      action = validations.toLowerFirst(action);
-      this.actions[action] = await import("dynalite/actions/" + action).then(
-        (m) => m.default
-      );
-      this.actionValidations[action] = await import(
-        "dynalite/validations/" + action
-      ).then((m) => m.default);
-    }
+const handler = async (
+  req: ReplyFnContext["req"],
+  body: string,
+  store: any
+): Promise<Response> => {
+  const target = (req.headers["x-amz-target"] || "").split(".");
+  const action = target[1] as ActionType;
+  let data = JSON.parse(body as string);
+
+  var actionValidation = actionValidations[action];
+  try {
+    data = validations.checkTypes(data, actionValidation.types);
+    validations.checkValidations(
+      data,
+      actionValidation.types,
+      actionValidation.custom,
+      store
+    );
+  } catch (err: any) {
+    return {
+      statusCode: err.statusCode,
+      body: err.body,
+    };
   }
 
-  async start() {
-    await this.load();
-    const app = express();
-    const store = db.create({});
+  const p = new Promise((resolve, reject) => {
+    actions[action](store, data, function (err: any, data: any) {
+      if (err) {
+        reject(err);
+      }
+      resolve(data);
+    });
+  });
 
-    const self = this;
-    const api = nock("http://localhost:4000")
-      .persist()
-      .post("/")
-      .reply(async function (uri, body) {
-        const target = (this.req.headers["x-amz-target"] || "").split(".");
-        const action = validations.toLowerFirst(target[1]);
+  return await p
+    .then((data) => {
+      return {
+        statusCode: 200,
+        body: data,
+      };
+    })
+    .catch((err) => {
+      return {
+        statusCode: err.statusCode,
+        body: err.body,
+      };
+    });
+};
 
-        let data = JSON.parse(body as string);
+type Options = {
+  endpoint: string;
+};
 
-        var actionValidation = self.actionValidations[action];
-        try {
-          data = validations.checkTypes(data, actionValidation.types);
-          validations.checkValidations(
-            data,
-            actionValidation.types,
-            actionValidation.custom,
-            store
-          );
-        } catch (err) {
-          return [err.statusCode, err.body];
-        }
-
-        let resData = {};
-        let resStatus = 200;
-        const p = new Promise((resolve, reject) => {
-          self.actions[action](store, data, function (err: any, data: any) {
-            if (err) {
-              reject(err);
-            }
-            resolve(data);
-          });
-        });
-
-        return await p
-          .then((data) => {
-            return [200, data];
-          })
-          .catch((err) => {
-            return [err.statusCode, err.body];
-          });
-      });
-  }
-}
+export const mockDynamoDB = (options: Options) => {
+  const store = db.create({});
+  const api = nock(options.endpoint)
+    .persist()
+    .post("/")
+    .reply(async function (uri, body) {
+      const data = await handler(this.req, body as string, store);
+      return [data.statusCode, data.body];
+    });
+};

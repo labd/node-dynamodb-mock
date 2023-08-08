@@ -1,9 +1,9 @@
 import { expect, test } from "vitest";
 import { DynamoDB } from "@aws-sdk/client-dynamodb";
-import { MockDynamoDB } from "./index.js";
+import { mockDynamoDB } from "./index.js";
 
-const m = new MockDynamoDB();
-m.start();
+mockDynamoDB({ endpoint: "http://localhost:4000" });
+
 const client = new DynamoDB({
   endpoint: "http://localhost:4000",
   region: "local",
