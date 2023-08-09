@@ -1,6 +1,8 @@
 
 declare module "dynalite/db" {
-  export type Store = {}
+  export type Store = {
+		recreate(): void
+	}
   export default {
     create(options: any):  Store
   }

@@ -3,6 +3,7 @@ import validations from "dynalite/validations";
 import nock, { ReplyFnContext } from "nock";
 import { ActionType, actions } from "./actions.js";
 import { actionValidations } from "./validations.js";
+import { parseAuthHeader } from "./auth.js";
 
 type Response = {
 	statusCode: number;
@@ -66,13 +67,57 @@ type Options = {
 	endpoint: string;
 };
 
+class MockDynamoDB {
+	private stores: Record<string, Store> = {};
+	private options: Options;
+	private isStarted = false;
+
+	constructor(options: Options) {
+		this.options = options;
+	}
+
+	private getStore(accessKeyId: string) {
+		if (!this.stores[accessKeyId]) {
+			this.stores[accessKeyId] = db.create({
+				createTableMs: 0,
+				deleteTableMs: 0,
+				updateTableMs: 0,
+			});
+		}
+		return this.stores[accessKeyId];
+	}
+
+	start() {
+		const self = this;
+		if (this.isStarted) {
+			return;
+		}
+		this.isStarted = true;
+		nock(this.options.endpoint)
+			.persist()
+			.post("/")
+			.reply(async function (uri, body) {
+				const auth = parseAuthHeader(this.req.headers.authorization);
+				const store = self.getStore(auth.credentials.accessKeyId);
+				const data = await handler(this.req, body as string, store);
+				return [data.statusCode, data.body];
+			});
+	}
+
+	reset() {
+		for (const store of Object.values(this.stores)) {
+			store.recreate();
+		}
+	}
+
+	stop() {
+		nock.cleanAll();
+		this.isStarted = false;
+	}
+}
+
 export const mockDynamoDB = (options: Options) => {
-	const store = db.create({});
-	nock(options.endpoint)
-		.persist()
-		.post("/")
-		.reply(async function (uri, body) {
-			const data = await handler(this.req, body as string, store);
-			return [data.statusCode, data.body];
-		});
+	const m = new MockDynamoDB(options);
+	m.start();
+	return m;
 };

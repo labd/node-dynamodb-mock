@@ -1,16 +1,19 @@
-import { expect, test } from "vitest";
+import { beforeEach, expect, test } from "vitest";
 import { DynamoDB } from "@aws-sdk/client-dynamodb";
 import { mockDynamoDB } from "./index.js";
 
-mockDynamoDB({ endpoint: "http://localhost:4000" });
-
+const mddb = mockDynamoDB({ endpoint: "http://localhost:4000" });
 const client = new DynamoDB({
 	endpoint: "http://localhost:4000",
 	region: "local",
 	credentials: {
-		accessKeyId: "fake",
+		accessKeyId: "fake-x",
 		secretAccessKey: "fake",
 	},
+});
+
+beforeEach(() => {
+	mddb.reset();
 });
 
 test("createTables", async () => {
@@ -45,9 +48,35 @@ test("createTables", async () => {
 
 	const tables = await client.listTables({});
 	expect(tables.TableNames).toEqual(["Music"]);
+
+	await client.batchWriteItem({
+		RequestItems: {
+			Music: [
+				{
+					PutRequest: {
+						Item: {
+							Artist: { S: "No One You Know" },
+							SongTitle: { S: "Call Me Today" },
+						},
+					},
+				},
+				{
+					PutRequest: {
+						Item: {
+							Artist: { S: "No One You Know" },
+							SongTitle: { S: "My Dog Spot" },
+						},
+					},
+				},
+			],
+		},
+	});
 });
 
 test("getItem not found", async () => {
+	const tables = await client.listTables({});
+	expect(tables.TableNames).toEqual([]);
+
 	await expect(
 		client.getItem({
 			TableName: "Music",
