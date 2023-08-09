@@ -1,5 +1,11 @@
 # @labdigital/mock-dynamodb
 
+## 0.2.1
+
+### Patch Changes
+
+- e81ccf8: Fix packaging issues
+
 ## 0.2.0
 
 ### Minor Changes
