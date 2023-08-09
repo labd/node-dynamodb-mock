@@ -3,6 +3,7 @@ This is a relatively simple wrapper around
 [dynalite](https://github.com/mhart/dynalite) to make it easier to use in a test
 environment.
 
+[![npm](https://img.shields.io/npm/v/@labdigital/mock-dynamodb.svg)](https://www.npmjs.com/package/@labdigital/mock-dynamodb)
 
 ## Usage
 ```typescript
