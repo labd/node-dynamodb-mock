@@ -67,7 +67,7 @@ type Options = {
 	endpoint: string;
 };
 
-class MockDynamoDB {
+export class MockDynamoDB {
 	private stores: Record<string, Store> = {};
 	private options: Options;
 	private isStarted = false;
