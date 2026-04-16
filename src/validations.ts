@@ -7,16 +7,16 @@ import DescribeTable from "dynalite/validations/describeTable";
 import DescribeTimeToLive from "dynalite/validations/describeTimeToLive";
 import GetItem from "dynalite/validations/getItem";
 import ListTables from "dynalite/validations/listTables";
+import ListTagsOfResource from "dynalite/validations/listTagsOfResource";
 import PutItem from "dynalite/validations/putItem";
 import Query from "dynalite/validations/query";
 import Scan from "dynalite/validations/scan";
 import TagResource from "dynalite/validations/tagResource";
 import UntagResource from "dynalite/validations/untagResource";
-import ListTagsOfResource from "dynalite/validations/listTagsOfResource";
 import UpdateItem from "dynalite/validations/updateItem";
 import UpdateTable from "dynalite/validations/updateTable";
 
-import { ActionType } from "./actions.js";
+import type { ActionType } from "./actions.js";
 
 export const actionValidations: Record<ActionType, any> = {
 	BatchGetItem,

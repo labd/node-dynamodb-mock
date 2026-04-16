@@ -1,5 +1,5 @@
-import { parseAuthHeader } from "./auth.js";
 import { expect, test } from "vitest";
+import { parseAuthHeader } from "./auth.js";
 
 test("parseAuth", () => {
 	const header =
