@@ -1,9 +1,9 @@
 import db, { type Store } from "dynalite/db";
 import validations from "dynalite/validations";
-import nock, { ReplyFnContext } from "nock";
-import { ActionType, actions } from "./actions.js";
-import { actionValidations } from "./validations.js";
+import nock, { type ReplyFnContext } from "nock";
+import { type ActionType, actions } from "./actions.js";
 import { parseAuthHeader } from "./auth.js";
+import { actionValidations } from "./validations.js";
 
 type Response = {
 	statusCode: number;
@@ -13,7 +13,7 @@ type Response = {
 const handler = async (
 	req: ReplyFnContext["req"],
 	body: string,
-	store: Store
+	store: Store,
 ): Promise<Response> => {
 	const target = (req.headers["x-amz-target"] || "").split(".");
 	const action = target[1] as ActionType;
@@ -26,7 +26,7 @@ const handler = async (
 			data,
 			actionValidation.types,
 			actionValidation.custom,
-			store
+			store,
 		);
 	} catch (err: any) {
 		if (err.statusCode) {
@@ -39,7 +39,7 @@ const handler = async (
 	}
 
 	const p = new Promise((resolve, reject) => {
-		actions[action](store, data, function (err: any, data: any) {
+		actions[action](store, data, (err: any, data: any) => {
 			if (err) {
 				reject(err);
 			}
@@ -96,7 +96,7 @@ export class MockDynamoDB {
 		nock(this.options.endpoint)
 			.persist()
 			.post("/")
-			.reply(async function (uri, body) {
+			.reply(async function (_uri, body) {
 				const auth = parseAuthHeader(this.req.headers.authorization);
 				const store = self.getStore(auth.credentials.accessKeyId);
 				const data = await handler(this.req, body as string, store);

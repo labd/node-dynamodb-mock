@@ -1,5 +1,5 @@
-import { beforeEach, expect, test } from "vitest";
 import { DynamoDB } from "@aws-sdk/client-dynamodb";
+import { beforeEach, expect, test } from "vitest";
 import { mockDynamoDB } from "./index.js";
 
 const mddb = mockDynamoDB({ endpoint: "http://localhost:4000" });
@@ -84,6 +84,6 @@ test("getItem not found", async () => {
 				Artist: { S: "No One You Know" },
 				SongTitle: { S: "Call Me Today" },
 			},
-		})
+		}),
 	).rejects.toThrow("Requested resource not found");
 });
