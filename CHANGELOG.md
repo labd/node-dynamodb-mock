@@ -1,5 +1,11 @@
 # @labdigital/mock-dynamodb
 
+## 0.2.2
+
+### Patch Changes
+
+- a4e085b: Migrate toolchain: tsup to tsdown, ESLint to Biome 2.x, update all dependencies
+
 ## 0.2.1
 
 ### Patch Changes
