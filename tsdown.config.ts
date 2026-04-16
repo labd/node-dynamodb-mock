@@ -10,6 +10,6 @@ export default defineConfig({
 	},
 	hash: false,
 	sourcemap: true,
-	format: ["cjs", "esm"],
+	format: ["esm"],
 	outDir: "dist",
 });
