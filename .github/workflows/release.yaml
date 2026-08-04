@@ -10,10 +10,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Set up Node.js
-        uses: labd/gh-actions-typescript/pnpm-install@4d7a6c7088328753fdbacbb9204aae4e2b9b00e2 # 1.0.0
+        uses: labd/gh-actions-typescript/pnpm-install@83f1d08c6553972e1222006d2dc97d203596eeeb # v1.0.2
 
       - name: Lint
         run: pnpm lint
@@ -29,10 +29,10 @@ jobs:
 
     steps:
       - name: Checkout repo
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Set up Node.js
-        uses: labd/gh-actions-typescript/pnpm-install@4d7a6c7088328753fdbacbb9204aae4e2b9b00e2 # 1.0.0
+        uses: labd/gh-actions-typescript/pnpm-install@83f1d08c6553972e1222006d2dc97d203596eeeb # v1.0.2
         with:
           node-version: ${{ matrix.node }}
 
@@ -54,12 +54,12 @@ jobs:
       pull-requests: write
     steps:
       - name: Checkout
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
 
       - name: Set up Node.js
-        uses: labd/gh-actions-typescript/pnpm-install@4d7a6c7088328753fdbacbb9204aae4e2b9b00e2 # 1.0.0
+        uses: labd/gh-actions-typescript/pnpm-install@83f1d08c6553972e1222006d2dc97d203596eeeb # v1.0.2
         with:
           node-version: 24.x
 
@@ -70,7 +70,7 @@ jobs:
         run: npm i -g npm@11.12.1
 
       - name: Create and publish versions
-        uses: changesets/action@6a0a831ff30acef54f2c6aa1cbbc1096b066edaf # v1.7.0
+        uses: changesets/action@a45c4d594aa4e2c509dc14a9f2b3b67ba3780d0d # v1.9.0
         with:
           title: "Release new version"
           commit: "update version"
