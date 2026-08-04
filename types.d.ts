@@ -2,6 +2,12 @@
 declare module "dynalite/db" {
   export type Store = {
 		recreate(): void
+		tableDb: {
+			get(
+				key: string,
+				cb: (err: any, table?: { TableStatus?: string }) => void
+			): void
+		}
 	}
   export default {
     create(options: any):  Store
