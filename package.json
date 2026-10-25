@@ -3,7 +3,8 @@
 	"version": "0.3.0",
 	"description": "Mock DynamoDB for testing using dynalite",
 	"publishConfig": {
-		"access": "public"
+		"access": "public",
+		"provenance": true
 	},
 	"keywords": [
 		"dynamodb",
@@ -14,7 +15,7 @@
 	"license": "MIT",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/labd/node-dynamodb-mock"
+		"url": "git+https://github.com/labd/node-dynamodb-mock.git"
 	},
 	"type": "module",
 	"main": "./dist/index.mjs",
