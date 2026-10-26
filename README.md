@@ -1,10 +1,11 @@
 # DynamoDB Mock
+
+[![npm](https://img.shields.io/npm/v/@labdigital/mock-dynamodb)](https://www.npmjs.com/package/@labdigital/mock-dynamodb)
+
 This is a relatively simple wrapper around
 [dynalite](https://github.com/mhart/dynalite) to make it easier to use in a test
 environment. Requests are intercepted with [msw](https://mswjs.io/), so no
 actual server or port is used.
-
-[![npm](https://img.shields.io/npm/v/@labdigital/mock-dynamodb.svg)](https://www.npmjs.com/package/@labdigital/mock-dynamodb)
 
 ## Usage
 This package provides msw request handlers, the msw server itself is managed by
