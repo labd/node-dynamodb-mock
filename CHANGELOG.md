@@ -1,5 +1,12 @@
 # @labdigital/mock-dynamodb
 
+## 0.4.0
+
+### Minor Changes
+
+- 6b6ee7f: Support MSW 3 (`msw` peer dependency is now `^2.0.0 || ^3.0.0`) and update dependencies.
+- 9c80e98: Require Node.js >= 22 (`engines.node` is now `>=22`; Node.js 20 is end-of-life and no longer supported) and update dev dependencies to resolve security advisories.
+
 ## 0.3.0
 
 ### Minor Changes
