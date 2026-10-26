@@ -35,7 +35,6 @@
 		"publish:version": "pnpm changeset version && pnpm format",
 		"format": "biome format --write .",
 		"lint": "biome check .",
-		"lint:package": "publint --strict",
 		"lint:fix": "biome check --write .",
 		"test": "pnpm vitest run",
 		"test:ci": "pnpm vitest run --coverage",
