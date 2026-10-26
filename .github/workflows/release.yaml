@@ -1,12 +1,20 @@
 name: Release
-on: [push]
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
 
 env:
   CI: true
 
 jobs:
   lint:
-    name: Lint codebase
+    name: Lint and typecheck codebase
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
@@ -17,6 +25,9 @@ jobs:
 
       - name: Lint
         run: pnpm lint
+
+      - name: Check types
+        run: pnpm tsc
 
   build:
     name: Build, and test on Node ${{ matrix.node }} and ${{ matrix.os }}
@@ -45,7 +56,7 @@ jobs:
   release:
     timeout-minutes: 15
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     environment: release
     needs: build
     permissions:
@@ -62,7 +73,7 @@ jobs:
         uses: labd/gh-actions-typescript/pnpm-install@ada4548df9a365c62c8b396b583953c6d4bc113f # v1.1.0
         with:
           node-version: 24.x
-          cache: false
+          cache: "false"
 
       - name: Run build
         run: pnpm build
@@ -76,6 +87,7 @@ jobs:
           pr-title: "Release new version"
           commit-message: "update version"
           publish-script: pnpm publish:ci
+          version-script: pnpm publish:version
           # v2 pushes the release commit and tags through the GitHub API; the
           # git CLI path keeps the previous behaviour.
           push-with-git-cli: true
