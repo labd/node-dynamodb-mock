@@ -1,3 +1,4 @@
+import { fileURLToPath } from "node:url";
 import { defineConfig } from "tsdown/config";
 
 export default defineConfig({
@@ -11,6 +12,9 @@ export default defineConfig({
 	shims: true,
 	deps: {
 		alwaysBundle: ["dynalite"],
+	},
+	alias: {
+		level: fileURLToPath(new URL("./src/level.ts", import.meta.url)),
 	},
 	hash: false,
 	sourcemap: true,
